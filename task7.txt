@@ -1,0 +1,7 @@
+UPDATE Country_vaccination_stats SET daily_vaccinations = 0
+WHERE daily_vaccinations IS NULL;
+SELECT country, (MAX(Country_vaccination_stats.daily_vaccinations) + MIN(Country_vaccination_stats.daily_vaccinations))/2 AS ['MID'] INTO mids
+FROM Country_vaccination_stats
+GROUP BY country;
+UPDATE Country_vaccination_stats, mids SET Country_vaccination_stats.daily_vaccinations = [mids].[mid]
+WHERE (((Country_vaccination_stats.daily_vaccinations)=0) AND ((Country_vaccination_stats.country)=[mids].[country]));
